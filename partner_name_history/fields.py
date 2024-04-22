@@ -12,9 +12,10 @@ def partner_name_history_convert_to_record(self, value, record):
     partner = original_convert_to_record(self, value, record)
     # Do this only when needed:
     # - specific context key is present
-    # - partners that have changed their name at least once
-    if record.env.context.get("use_partner_name_history") and (
-        self.comodel_name == "res.partner" and partner.name_history_ids
+    # - returned record is a partner
+    if (
+        record.env.context.get("use_partner_name_history")
+        and partner._name == "res.partner"
     ):
         model_date_field_map = getattr(record, "_partner_name_history_field_map", {})
         model_date_field = model_date_field_map.get(self.name)

@@ -90,3 +90,36 @@ class TestFields(TransactionCase):
                 lambda fr: fr.date == record_date
             )
             self.assertEqual(expected_name, fake_record_with_ctx.partner_id.name)
+
+    def test_multiple_partners(self):
+        """Read old names from multiple partners with history."""
+        # Arrange
+        partner = self.partner
+        other_partner = partner.copy()
+        partners = partner + other_partner
+        _set_partner_name(partner, "New name")
+        _set_partner_name(other_partner, "Other new name")
+
+        # Act
+        fake_records = (
+            self.env["fake.model"]
+            .create(
+                [
+                    {
+                        "partner_id": partner.id,
+                    }
+                    for partner in partners
+                ]
+            )
+            .with_context(
+                use_partner_name_history=True,
+            )
+        )
+
+        # Assert
+        fake_records.invalidate_recordset()
+        partners.invalidate_recordset()
+        self.assertEqual(
+            fake_records.partner_id.mapped("name"),
+            partners.mapped("name"),
+        )
