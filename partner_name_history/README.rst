@@ -60,6 +60,18 @@ A more dynamic behavior is enabled when `use_partner_name_history` is in the con
 
 This means that `move.partner_id.name` will actually be `move.partner_id.with_context(partner_name_date=move.invoice_date).name`.
 
+The values of the map can also be method names:
+
+.. code-block::
+
+  class AccountMove(models.Model):
+      _inherit = "account.move"
+      _partner_name_history_field_map = {
+          "partner_id": "_get_partner_name_history_date",
+      }
+
+This means that `move.partner_id.name` will actually be `move.partner_id.with_context(partner_name_date=move._get_partner_name_history_date()).name`.
+
 This can be useful in reports because it allows to show the old name of partners with no QWeb change.
 
 The above example is extracted from `account_move_partner_name_history`.

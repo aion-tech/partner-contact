@@ -6,6 +6,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from odoo_test_helper import FakeModelLoader
 
+from odoo.exceptions import UserError
 from odoo.tests import Form, TransactionCase
 
 from .common import _get_name_from_date, _set_partner_name
@@ -17,9 +18,9 @@ class TestFields(TransactionCase):
         super().setUpClass()
         cls.loader = FakeModelLoader(cls.env, cls.__module__)
         cls.loader.backup_registry()
-        from .fake_models import FakeModel
+        from .fake_models import FakeModel, FakeModelMethod, FakeModelWrongMap
 
-        cls.loader.update_registry((FakeModel,))
+        cls.loader.update_registry((FakeModel, FakeModelMethod, FakeModelWrongMap))
 
         partner_form = Form(cls.env["res.partner"])
         partner_form.name = "Test"
@@ -123,3 +124,62 @@ class TestFields(TransactionCase):
             fake_records.partner_id.mapped("name"),
             partners.mapped("name"),
         )
+
+    def test_date_by_method(self):
+        """Read old name using method."""
+        # Arrange
+        one_day = relativedelta(days=1)
+        partner = self.partner
+        original_partner_name = partner.name
+        new_partner_name, change_date = "New name", datetime.date(2020, 1, 1)
+        _set_partner_name(partner, new_partner_name, date=change_date)
+
+        # Act
+        fake_records = (
+            self.env["fake.model.method"]
+            .create(
+                [
+                    {
+                        "partner_id": partner.id,
+                        "date": date,
+                    }
+                    for date in [
+                        change_date - one_day,
+                        change_date + one_day,
+                    ]
+                ]
+            )
+            .with_context(
+                use_partner_name_history=True,
+            )
+        )
+
+        # Assert
+        original_name_record, new_name_record = fake_records.sorted("date")
+        self.assertEqual(original_name_record.partner_id.name, original_partner_name)
+        self.assertEqual(new_name_record.partner_id.name, new_partner_name)
+
+    def test_wrong_partner_name_history_field_map(self):
+        """Raise exception when _partner_name_history_field_map value is not recognized."""
+        # Arrange
+        partner = self.partner
+        fake_record = (
+            self.env["fake.model.wrong_map"]
+            .create(
+                [
+                    {
+                        "partner_id": partner.id,
+                    }
+                ]
+            )
+            .with_context(
+                use_partner_name_history=True,
+            )
+        )
+
+        # Assert
+        with self.assertRaises(UserError) as ue:
+            self.assertTrue(fake_record.partner_id.name)
+        exc_message = ue.exception.args[0]
+        self.assertIn("datte", exc_message)
+        self.assertIn(fake_record._name, exc_message)

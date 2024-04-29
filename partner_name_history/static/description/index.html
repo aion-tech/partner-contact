@@ -406,6 +406,15 @@ class AccountMove(models.Model):
     }
 </pre>
 <p>This means that <cite>move.partner_id.name</cite> will actually be <cite>move.partner_id.with_context(partner_name_date=move.invoice_date).name</cite>.</p>
+<p>The values of the map can also be method names:</p>
+<pre class="code literal-block">
+class AccountMove(models.Model):
+    _inherit = &quot;account.move&quot;
+    _partner_name_history_field_map = {
+        &quot;partner_id&quot;: &quot;_get_partner_name_history_date&quot;,
+    }
+</pre>
+<p>This means that <cite>move.partner_id.name</cite> will actually be <cite>move.partner_id.with_context(partner_name_date=move._get_partner_name_history_date()).name</cite>.</p>
 <p>This can be useful in reports because it allows to show the old name of partners with no QWeb change.</p>
 <p>The above example is extracted from <cite>account_move_partner_name_history</cite>.</p>
 </div>
