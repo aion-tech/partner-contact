@@ -16,7 +16,7 @@ def _get_partner_name_date(self, record):
     partner_name_date_field = model_date_field_map.get(self.name)
     if partner_name_date_field in record._fields:
         partner_name_date = record[partner_name_date_field]
-    else:
+    elif partner_name_date_field:
         partner_name_date_method_name = partner_name_date_field
 
         try:
@@ -31,6 +31,8 @@ def _get_partner_name_date(self, record):
             ) from ae
         else:
             partner_name_date = partner_name_date_method()
+    else:
+        partner_name_date = None
     return partner_name_date
 
 
@@ -44,18 +46,18 @@ def partner_name_history_convert_to_record(self, value, record):
         and partner._name == "res.partner"
     ):
         partner_name_date = _get_partner_name_date(self, record)
-
-        # Otherwise the name of the partner
-        # is retrieved once and always returned,
-        # even if it is requested for different dates
-        partner.invalidate_recordset(
-            fnames=[
-                "name",
-            ],
-        )
-        partner = partner.with_context(
-            partner_name_date=partner_name_date,
-        )
+        if partner_name_date is not None:
+            # Otherwise the name of the partner
+            # is retrieved once and always returned,
+            # even if it is requested for different dates
+            partner.invalidate_recordset(
+                fnames=[
+                    "name",
+                ],
+            )
+            partner = partner.with_context(
+                partner_name_date=partner_name_date,
+            )
     return partner
 
 
