@@ -4,22 +4,28 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 15.0\n"
+"Project-Id-Version: Odoo Server 16.0+e-20240603\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-12-26 14:48+0000\n"
-"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
-"Language-Team: none\n"
+"POT-Creation-Date: 2024-12-05 14:59+0000\n"
+"PO-Revision-Date: 2024-12-05 16:45+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.5\n"
 
 #. module: base_partner_company_group
 #: model_terms:ir.ui.view,arch_db:base_partner_company_group.view_res_partner_filter
 msgid "Company Group"
 msgstr "Azienda capogruppo"
+
+#. module: base_partner_company_group
+#: model_terms:ir.ui.view,arch_db:base_partner_company_group.view_partner_form
+msgid "Company Group Members"
+msgstr "Membri Gruppo Aziende"
 
 #. module: base_partner_company_group
 #: model:ir.model.fields,field_description:base_partner_company_group.field_res_partner__company_group_id
@@ -29,7 +35,9 @@ msgstr "Azienda capogruppo"
 
 #. module: base_partner_company_group
 #: model:ir.actions.act_window,name:base_partner_company_group.action_open_group_members
+#: model:ir.model.fields,field_description:base_partner_company_group.field_res_partner__company_group_company_member_ids
 #: model:ir.model.fields,field_description:base_partner_company_group.field_res_partner__company_group_member_ids
+#: model:ir.model.fields,field_description:base_partner_company_group.field_res_users__company_group_company_member_ids
 #: model:ir.model.fields,field_description:base_partner_company_group.field_res_users__company_group_member_ids
 msgid "Company group members"
 msgstr "Membri gruppo azienda"
@@ -38,3 +46,8 @@ msgstr "Membri gruppo azienda"
 #: model:ir.model,name:base_partner_company_group.model_res_partner
 msgid "Contact"
 msgstr "Contatto"
+
+#. module: base_partner_company_group
+#: model_terms:ir.ui.view,arch_db:base_partner_company_group.view_partner_form
+msgid "VAT:"
+msgstr "IVA:"
