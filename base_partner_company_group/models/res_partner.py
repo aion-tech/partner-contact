@@ -18,6 +18,12 @@ class Contact(models.Model):
         inverse_name="company_group_id",
         string="Company group members",
     )
+    company_group_company_member_ids = fields.One2many(
+        comodel_name="res.partner",
+        inverse_name="company_group_id",
+        string="Company group members",
+        domain=[("parent_id", "=", False)],
+    )
 
     def _commercial_fields(self):
         return super()._commercial_fields() + ["company_group_id"]

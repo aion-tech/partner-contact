@@ -10,7 +10,24 @@
                     name="company_group_id"
                     attrs="{'invisible': [('is_company','=', False)]}"
                 />
+                <field name="company_group_member_ids" 
+                    invisible="1"/>
             </field>
+            <xpath expr="//notebook" position="inside">
+                <page string="Company Group Members" 
+                    name="company_group_members"
+                    attrs="{'invisible': ['|', ('is_company','=', False),
+                    ('company_group_member_ids', '=', [])]}">
+                    <field name="company_group_company_member_ids"
+                        readonly="1">
+                        <tree editable="bottom">
+                            <field name="name" />
+                            <field name="vat" />
+                            <field name="contact_address" />     
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
         </field>
     </record>
     <record id="view_res_partner_filter" model="ir.ui.view">
